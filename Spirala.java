@@ -18,7 +18,7 @@ public class Spirala {
 		int dec;
 		int br=1;
 		
-		for (int i=0;i<9999;i++) {
+		for (;;) {
 			dec=mnozSt*mnozRe;
 			while (br<(st*mnozSt+re*mnozRe)-dec) {
 				niz[r-1][s-1]=br;
