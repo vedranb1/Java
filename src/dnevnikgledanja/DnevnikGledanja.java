@@ -6,6 +6,7 @@
 package dnevnikgledanja;
 
 import dnevnikgledanja.utility.HibernateUtil;
+import dnevnikgledanja.view.Autorizacija;
 import dnevnikgledanja.view.Izbornik;
 import dnevnikgledanja.view.Serije;
 import java.util.List;
@@ -23,7 +24,7 @@ public class DnevnikGledanja {
      */
     public static void main(String[] args) {
        
-        new Izbornik().setVisible(true);
+        new Autorizacija().setVisible(true);
         String sql = "SELECT * FROM serija";
         SQLQuery query = HibernateUtil.getSession().createSQLQuery(sql);
         query.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);

@@ -32,7 +32,5 @@
     <mapping class="dnevnikgledanja.model.Serija" file="" jar="" package="" resource=""/>
     <mapping class="dnevnikgledanja.model.Sezona"/>
     <mapping class="dnevnikgledanja.model.Korisnik"/>
-    <mapping class="dnevnikgledanja.model.Dnevnik" file="" jar="" package="" resource=""/>
-    <mapping class="dnevnikgledanja.model.Korisnik"/>
   </session-factory>
 </hibernate-configuration>

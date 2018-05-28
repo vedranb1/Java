@@ -6,11 +6,16 @@
 package dnevnikgledanja.view;
 
 
+import dnevnikgledanja.view.Izbornik;
 import dnevnikgledanja.controller.Obrada;
+import dnevnikgledanja.model.Korisnik;
 import dnevnikgledanja.model.Serija;
+import static dnevnikgledanja.model.Serija_.korisnik;
 import dnevnikgledanja.model.Sezona;
 import dnevnikgledanja.utility.HibernateUtil;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -25,24 +30,33 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.border.Border;
 import org.hibernate.Query;
+import org.hibernate.Session;
 
 /**
  *
  * @author Veco
  */
 public class Serije extends javax.swing.JFrame {
-
+    
+   Korisnik k = new Korisnik();
+   private int sifraKorisnika;  
+   private Border obrub;
    private Obrada<Serija> obrada;
    private Obrada<Sezona> obradaSezona;
    private int sifraSerije;
    private long ukupnaOcjena;
    private long ukupnoSezona;
-   private long prosjecnaOcjena;
-    
-    public Serije() {
+   private long prosjecnaOcjena; 
+   
+    public Serije(Korisnik k) {
         initComponents();
-        
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
+        this.k=k;
+        sifraKorisnika=this.k.getSifra();
+        System.out.println(sifraKorisnika);
         obrada = new Obrada<>();
         obradaSezona = new Obrada<>();
         
@@ -69,17 +83,13 @@ public class Serije extends javax.swing.JFrame {
         btnDodaj = new javax.swing.JButton();
         btnPromjeni = new javax.swing.JButton();
         btnObrisi = new javax.swing.JButton();
-        txtBrojSezona = new javax.swing.JTextField();
         btnSelect = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        txtDnevnik = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         serijeList = new javax.swing.JList<>();
         nazivSezoneLabel = new javax.swing.JLabel();
         txtNazivSezone = new javax.swing.JTextField();
         brojEpizodaLabel = new javax.swing.JLabel();
         txtBrojEpizoda = new javax.swing.JTextField();
-        brojSezonaLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         txtRedniBroj = new javax.swing.JTextField();
         btnDodajSezonu = new javax.swing.JButton();
@@ -103,7 +113,7 @@ public class Serije extends javax.swing.JFrame {
 
         jButton4.setText("jButton4");
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         sezoneList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
@@ -142,8 +152,6 @@ public class Serije extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setText("Dnevnik");
-
         serijeList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
                 serijeListValueChanged(evt);
@@ -154,8 +162,6 @@ public class Serije extends javax.swing.JFrame {
         nazivSezoneLabel.setText("Naziv");
 
         brojEpizodaLabel.setText("Broj epizoda");
-
-        brojSezonaLabel1.setText("Broj sezona");
 
         jLabel2.setText("Redni broj");
 
@@ -213,45 +219,50 @@ public class Serije extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(25, 25, 25)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel7)
-                        .addGap(49, 49, 49))
-                    .addComponent(jLabel8))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(nazivLabel, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(txtBrojSezona, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(txtDnevnik, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(txtNaziv, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(btnObrisi)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(btnPromjeni))
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(btnDodaj)
-                                    .addGap(65, 65, 65)
-                                    .addComponent(btnSelect)))
-                            .addGap(16, 16, 16)))
-                    .addComponent(brojSezonaLabel1)
-                    .addComponent(txtProsjek, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(5, 5, 5)
-                        .addComponent(jLabel5)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtOcjenaSezone, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel6)
-                    .addComponent(LabelPrikaz))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addGap(49, 49, 49)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(8, 8, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(nazivLabel)
+                                    .addComponent(txtNaziv, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnDodaj)
+                                    .addComponent(btnSelect)
+                                    .addComponent(btnPromjeni))
+                                .addGap(46, 46, 46))
+                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnObrisi)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel8)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtProsjek, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtNazivSezone, javax.swing.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 1, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtOcjenaSezone, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(24, 24, 24))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel6)
+                            .addComponent(LabelPrikaz, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtNazivSezone, javax.swing.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)
                     .addComponent(txtBrojEpizoda)
                     .addComponent(txtRedniBroj)
                     .addComponent(nazivSezoneLabel)
@@ -260,97 +271,92 @@ public class Serije extends javax.swing.JFrame {
                     .addComponent(btnObrisiSezonu)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnDodajSezonu)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnPromjeniSezonu))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(txtPogledano, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(txtPogledano, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel4))
+                            .addComponent(btnDodajSezonu))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 5, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtUkupanBrojEpizoda, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnPlus)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnMinus)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnPromjeniSezonu)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(txtUkupanBrojEpizoda, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnPlus)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnMinus)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(16, 16, 16)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(nazivSezoneLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtNazivSezone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(brojEpizodaLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtBrojEpizoda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtRedniBroj, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtPogledano, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4)
-                            .addComponent(txtUkupanBrojEpizoda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnPlus)
-                            .addComponent(btnMinus))
-                        .addGap(16, 16, 16)
+                            .addComponent(jLabel7)
+                            .addComponent(nazivLabel))
+                        .addGap(26, 26, 26)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnDodajSezonu)
-                            .addComponent(btnPromjeniSezonu))
-                        .addGap(18, 18, 18)
-                        .addComponent(btnObrisiSezonu))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(nazivLabel)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtNaziv, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(brojSezonaLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtBrojSezona, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtDnevnik, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(31, 31, 31)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnDodaj)
-                            .addComponent(btnSelect))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnPromjeni)
-                            .addComponent(btnObrisi))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(txtProsjek, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel8))
+                        .addGap(38, 38, 38))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(LabelPrikaz)
+                                .addComponent(nazivSezoneLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtNazivSezone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(brojEpizodaLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtBrojEpizoda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtRedniBroj, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel3)
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(txtPogledano, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtUkupanBrojEpizoda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel4)
+                                    .addComponent(btnPlus)
+                                    .addComponent(btnMinus))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(btnDodajSezonu)
+                                    .addComponent(btnPromjeniSezonu))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(btnObrisiSezonu))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(10, 10, 10)
-                                .addComponent(jLabel7)
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addGap(22, 22, 22)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5)
-                            .addComponent(txtOcjenaSezone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel8)
-                            .addComponent(txtProsjek, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(3, 3, 3)))
-                .addContainerGap())
+                                .addComponent(jLabel6)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtNaziv, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(btnDodaj)
+                                        .addGap(41, 41, 41)
+                                        .addComponent(btnSelect)
+                                        .addGap(39, 39, 39)
+                                        .addComponent(btnPromjeni)
+                                        .addGap(35, 35, 35)
+                                        .addComponent(btnObrisi))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(4, 4, 4)
+                                        .addComponent(LabelPrikaz, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(txtOcjenaSezone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel5))))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         pack();
@@ -358,11 +364,13 @@ public class Serije extends javax.swing.JFrame {
 
     private void btnDodajActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDodajActionPerformed
        
-        /* resetirajGreske(); */
+        resetirajGreskeSerija();
         if (!kontrolaSerija()) {
             return;
         }
         Serija s = new Serija();
+        System.out.println(sifraKorisnika);
+        s.setKorisnik(String.valueOf(sifraKorisnika));
         s = napuniObjekt(s);
         obrada.save(s);
         ucitajPodatkeSerija();
@@ -370,8 +378,6 @@ public class Serije extends javax.swing.JFrame {
     
     private Serija napuniObjekt(Serija ser) {
         ser.setNaziv(txtNaziv.getText());
-        ser.setBrojsezona(Integer.parseInt(txtBrojSezona.getText()));
-        ser.setDnevnik(Integer.parseInt(txtDnevnik.getText()));
         return ser;
     }
     
@@ -391,13 +397,7 @@ public class Serije extends javax.swing.JFrame {
             oznaciGresku(txtNaziv);
             return false;
         }
-
-        try {
-            Integer.parseInt(txtBrojSezona.getText());
-        } catch (Exception e) {
-            oznaciGresku(txtBrojSezona);
-            return false;
-        }
+          
         return true;
     }
     
@@ -412,7 +412,21 @@ public class Serije extends javax.swing.JFrame {
             return false;
         }
         
+        try {
+            Integer.parseInt(txtBrojEpizoda.getText());
+        } catch (Exception e) {
+            oznaciGresku(txtBrojEpizoda);
+            return false;
+        }
+        
         if (txtRedniBroj.getText().trim().length() == 0) {
+            oznaciGresku(txtRedniBroj);
+            return false;
+        }
+        
+        try {
+            Integer.parseInt(txtRedniBroj.getText());
+        } catch (Exception e) {
             oznaciGresku(txtRedniBroj);
             return false;
         }
@@ -425,14 +439,18 @@ public class Serije extends javax.swing.JFrame {
         polje.requestFocus();
     }
     
-    /*
-    private void resetirajGreske() {
+    
+    private void resetirajGreskeSerija() {
         txtNaziv.setBorder(obrub);
-        txtCijena.setBorder(obrub);
-        txtUpisnina.setBorder(obrub);
-        txtTrajanje.setBorder(obrub);
     }
-    */
+    
+    private void resetirajGreskeSezona() {
+        txtNazivSezone.setBorder(obrub);
+        txtBrojEpizoda.setBorder(obrub);
+        txtRedniBroj.setBorder(obrub);
+        txtOcjenaSezone.setBorder(obrub);
+    }
+    
     
     private void btnPromjeniActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPromjeniActionPerformed
          
@@ -447,7 +465,7 @@ public class Serije extends javax.swing.JFrame {
             return;
         }
 
-        /* resetirajGreske(); */
+        resetirajGreskeSerija(); 
         if (!kontrolaSerija()) {
             return;
         }
@@ -488,20 +506,6 @@ public class Serije extends javax.swing.JFrame {
             return;
         }
         
-        boolean mozeObrisati=true;
-        
-        /* for (Grupa g : s.getGrupe()) {
-            if(!g.isObrisano()){
-                mozeObrisati=false;
-                break;
-            }
-        }
-        
-
-        if(!mozeObrisati){
-            JOptionPane.showMessageDialog(getParent(), "Smjer se ne može obrisati re se na njemu nalaze grupe");
-            return;
-        } */
         obrada.delete(s);
         ucitajPodatkeSerija();
     }//GEN-LAST:event_btnObrisiActionPerformed
@@ -526,7 +530,6 @@ public class Serije extends javax.swing.JFrame {
         }
 
         txtNaziv.setText(s.getNaziv());
-        txtBrojSezona.setText(String.valueOf(s.getBrojsezona()));
         Query query = HibernateUtil.getSession().createQuery(
                 "select sum(ocjena) from dnevnikgledanja.model.Sezona where serija=:serija and ocjena>0 and obrisano=false").setInteger("serija", sifraSerije);
         ukupnaOcjena = (Long)query.uniqueResult();
@@ -539,7 +542,7 @@ public class Serije extends javax.swing.JFrame {
 
     private void btnDodajSezonuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDodajSezonuActionPerformed
         
-        /* resetirajGreske(); */
+        resetirajGreskeSezona();
         if (!kontrolaSezona()) {
             return;
         }
@@ -563,7 +566,7 @@ public class Serije extends javax.swing.JFrame {
             return;
         }
 
-        /* resetirajGreske(); */
+        resetirajGreskeSezona();
         if (!kontrolaSezona()) {
             return;
         }
@@ -582,20 +585,6 @@ public class Serije extends javax.swing.JFrame {
             return;
         }
         
-        boolean mozeObrisati=true;
-        
-        /* for (Grupa g : s.getGrupe()) {
-            if(!g.isObrisano()){
-                mozeObrisati=false;
-                break;
-            }
-        }
-        
-
-        if(!mozeObrisati){
-            JOptionPane.showMessageDialog(getParent(), "Smjer se ne može obrisati re se na njemu nalaze grupe");
-            return;
-        } */
         obradaSezona.delete(s);
         ucitajPodatkeSezona();
         
@@ -640,44 +629,12 @@ public class Serije extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Serije.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Serije.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Serije.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Serije.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new Serije().setVisible(true);
-            }
-        });
-    }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel LabelPrikaz;
     private javax.swing.JLabel brojEpizodaLabel;
     private javax.swing.JLabel brojSezonaLabel;
-    private javax.swing.JLabel brojSezonaLabel1;
     private javax.swing.JButton btnDodaj;
     private javax.swing.JButton btnDodajSezonu;
     private javax.swing.JButton btnMinus;
@@ -688,7 +645,6 @@ public class Serije extends javax.swing.JFrame {
     private javax.swing.JButton btnPromjeniSezonu;
     private javax.swing.JButton btnSelect;
     private javax.swing.JButton jButton4;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -704,8 +660,6 @@ public class Serije extends javax.swing.JFrame {
     private javax.swing.JList<Serija> serijeList;
     private javax.swing.JList<Sezona> sezoneList;
     private javax.swing.JTextField txtBrojEpizoda;
-    private javax.swing.JTextField txtBrojSezona;
-    private javax.swing.JTextField txtDnevnik;
     private javax.swing.JTextField txtNaziv;
     private javax.swing.JTextField txtNazivSezone;
     private javax.swing.JTextField txtOcjenaSezone;
@@ -717,9 +671,8 @@ public class Serije extends javax.swing.JFrame {
     
      private void ucitajPodatkeSerija() {
         DefaultListModel<Serija> modelSerija = new DefaultListModel<>();
-
         List<Serija> lista = HibernateUtil.getSession().createQuery(
-                "from dnevnikgledanja.model.Serija where obrisano=false").list();
+                "from dnevnikgledanja.model.Serija where korisnik=:korisnik and obrisano=false").setInteger("korisnik", sifraKorisnika).list();
 
         for (Serija s : lista) {
             modelSerija.addElement(s);

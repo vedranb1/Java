@@ -15,8 +15,8 @@ import org.hibernate.Session;
 
 /**
  *
- * @author tjakopec
- * @param <T> bilo koji entitet mapiran putem ORM-a
+ * 
+ * 
  */
 public class Obrada<T extends Entitet> {
 
@@ -26,14 +26,13 @@ public class Obrada<T extends Entitet> {
         session = HibernateUtil.getSession();
     }
 
-    //Create ili Update ili Delete jer imamo atribut delete
     public T save(T entitet) {
         if (entitet.getSifra() == 0) {
             entitet.setDatumKreiranja(new Date());
         } else if (entitet.getDatumBrisanja() == null) {
             entitet.setDatumPromjene(new Date());
         }
-//tu dođu podaci o operaterima nakon što napravimo login
+
         session.beginTransaction();
         session.saveOrUpdate(entitet);
         session.getTransaction().commit();
@@ -48,14 +47,12 @@ public class Obrada<T extends Entitet> {
         return q.list();
     }
     
-    //Read
     @Deprecated
     public List<T> createQuery(String hql) {
         Query q = session.createQuery(hql);
         return q.list();
     }
 
-    //Delete
     public void delete(T entitet) {
         entitet.setDatumBrisanja(new Date());
         entitet.setObrisano(true);

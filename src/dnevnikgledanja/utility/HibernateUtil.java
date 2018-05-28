@@ -10,8 +10,8 @@ import org.hibernate.cfg.Configuration;
 
 /**
  *
- * @author tjakopec
- * Ovo je Singleton
+ * 
+ *
  */
 public class HibernateUtil {
 

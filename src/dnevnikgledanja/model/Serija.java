@@ -19,21 +19,16 @@ import javax.persistence.Table;
 public class Serija extends Entitet implements Serializable{
     
     private String naziv;
-    private int brojsezona;
-   
-    private int dnevnik = 0;
+    private String korisnik;
 
-    public int getDnevnik() {
-        return dnevnik;
+    public String getKorisnik() {
+        return korisnik;
     }
 
-    public void setDnevnik(int dnevnik) {
-        this.dnevnik = dnevnik;
+    public void setKorisnik(String korisnik) {
+        this.korisnik = korisnik;
     }
-
-    @OneToMany(mappedBy = "serija")
     
-
     public String getNaziv() {
         return naziv;
     }
@@ -41,15 +36,4 @@ public class Serija extends Entitet implements Serializable{
     public void setNaziv(String naziv) {
         this.naziv = naziv;
     }
-
-    public int getBrojsezona() {
-        return brojsezona;
-    }
-
-    public void setBrojsezona(int brojsezona) {
-        this.brojsezona = brojsezona;
-    }
-
-    
-    
 }

@@ -6,12 +6,19 @@
 package dnevnikgledanja.view;
 
 import dnevnikgledanja.controller.Obrada;
+import dnevnikgledanja.controller.ObradaKorisnik;
 import dnevnikgledanja.model.Korisnik;
 import dnevnikgledanja.model.Serija;
 import dnevnikgledanja.utility.HibernateUtil;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.util.List;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.border.Border;
 
 /**
  *
@@ -19,14 +26,15 @@ import javax.swing.JOptionPane;
  */
 public class Korisnici extends javax.swing.JFrame {
     
-    private Obrada<Korisnik> obrada;
-    /**
-     * Creates new form Operateri
-     */
+    private Border obrub;
+    private ObradaKorisnik<Korisnik> obrada;
+   
     public Korisnici() {
         
         initComponents();
-        obrada = new Obrada<>();
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
+        obrada = new ObradaKorisnik<>();
         
         ucitajPodatkeKorisnik();
     }
@@ -49,8 +57,12 @@ public class Korisnici extends javax.swing.JFrame {
         btnDodaj = new javax.swing.JButton();
         btnPromjeni = new javax.swing.JButton();
         btnObrisi = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        txtLozinka = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        txtUloga = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         korisniciList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
@@ -84,6 +96,10 @@ public class Korisnici extends javax.swing.JFrame {
             }
         });
 
+        jLabel3.setText("Lozinka");
+
+        jLabel4.setText("Uloga");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -92,18 +108,21 @@ public class Korisnici extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jLabel1)
-                        .addComponent(jLabel2)
-                        .addComponent(txtUsername, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
-                        .addComponent(txtEmail))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel1)
+                    .addComponent(txtUsername, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
+                    .addComponent(txtEmail)
+                    .addComponent(jLabel2)
+                    .addComponent(btnObrisi)
+                    .addComponent(jLabel3)
+                    .addComponent(txtLozinka)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnDodaj)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnPromjeni))
-                    .addComponent(btnObrisi))
-                .addContainerGap(69, Short.MAX_VALUE))
+                    .addComponent(jLabel4)
+                    .addComponent(txtUloga))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -115,16 +134,23 @@ public class Korisnici extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel3)
+                        .addGap(9, 9, 9)
+                        .addComponent(txtLozinka, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(36, 36, 36)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtUloga, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnDodaj)
                             .addComponent(btnPromjeni))
-                        .addGap(18, 18, 18)
-                        .addComponent(btnObrisi)
-                        .addGap(0, 61, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnObrisi))
                     .addComponent(jScrollPane1))
                 .addContainerGap())
         );
@@ -145,16 +171,18 @@ public class Korisnici extends javax.swing.JFrame {
         }
 
         txtUsername.setText(k.getUsername());
+        txtLozinka.setText(k.getLozinka());
         txtEmail.setText(k.getEmail());
+        txtUloga.setText(k.getUloga());
         
     }//GEN-LAST:event_korisniciListValueChanged
 
     private void btnDodajActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDodajActionPerformed
         
-        /* resetirajGreske(); 
+        resetirajGreske(); 
         if (!kontrola()) {
             return;
-        } */
+        } 
         Korisnik k = new Korisnik();
         k = napuniObjekt(k);
         obrada.save(k);
@@ -175,10 +203,10 @@ public class Korisnici extends javax.swing.JFrame {
             return;
         }
 
-        /* resetirajGreske(); 
+        resetirajGreske(); 
         if (!kontrola()) {
             return;
-        } */
+        } 
         k = napuniObjekt(k);
         obrada.save(k);
         ucitajPodatkeKorisnik();
@@ -193,20 +221,6 @@ public class Korisnici extends javax.swing.JFrame {
             return;
         }
         
-        boolean mozeObrisati=true;
-        
-        /* for (Grupa g : s.getGrupe()) {
-            if(!g.isObrisano()){
-                mozeObrisati=false;
-                break;
-            }
-        }
-        
-
-        if(!mozeObrisati){
-            JOptionPane.showMessageDialog(getParent(), "Smjer se ne može obrisati re se na njemu nalaze grupe");
-            return;
-        } */
         obrada.delete(k);
         ucitajPodatkeKorisnik();
         
@@ -214,9 +228,48 @@ public class Korisnici extends javax.swing.JFrame {
     
     private Korisnik napuniObjekt(Korisnik k) {
         k.setUsername(txtUsername.getText());
+        k.setLozinka(txtLozinka.getText());
         k.setEmail(txtEmail.getText());
+        k.setUloga(txtUloga.getText());
         
         return k;
+    }
+    
+    private boolean kontrola(){
+        
+        if (txtUsername.getText().trim().length() == 0) {
+            oznaciGresku(txtUsername);
+            return false;
+        }
+        
+        if (txtLozinka.getText().trim().length() == 0) {
+            oznaciGresku(txtLozinka);
+            return false;
+        }
+        
+        if (txtEmail.getText().trim().length() == 0) {
+            oznaciGresku(txtEmail);
+            return false;
+        }
+        
+        if (txtUloga.getText().trim().length() == 0) {
+            oznaciGresku(txtUloga);
+            return false;
+        }
+        
+        return true;
+    }
+    
+    private void oznaciGresku(JTextField polje) {
+        polje.setBorder(BorderFactory.createLineBorder(Color.decode("#FF0000")));
+        polje.requestFocus();
+    }
+    
+    private void resetirajGreske() {
+        txtUsername.setBorder(obrub);
+        txtLozinka.setBorder(obrub);
+        txtEmail.setBorder(obrub);
+        txtUloga.setBorder(obrub);
     }
     
     /**
@@ -261,9 +314,13 @@ public class Korisnici extends javax.swing.JFrame {
     private javax.swing.JButton btnPromjeni;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JList<Korisnik> korisniciList;
     private javax.swing.JTextField txtEmail;
+    private javax.swing.JTextField txtLozinka;
+    private javax.swing.JTextField txtUloga;
     private javax.swing.JTextField txtUsername;
     // End of variables declaration//GEN-END:variables
 
